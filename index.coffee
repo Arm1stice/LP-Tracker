@@ -12,6 +12,6 @@ app.once 'ready', ->
     show: false
   }
   console.log __dirname
-  mainWindow.loadURL "file://#{__dirname}/static/index.html"
+  mainWindow.loadURL "file://#{__dirname}/views/index.html"
   mainWindow.webContents.once 'did-finish-load', ->
     mainWindow.show()
