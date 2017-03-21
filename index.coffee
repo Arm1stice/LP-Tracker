@@ -11,6 +11,7 @@ app.once 'ready', ->
     height: 100
     show: false
   }
-  mainWindow.loadURL "file://#{__dirname}/../static/index.html"
+  console.log __dirname
+  mainWindow.loadURL "file://#{__dirname}/static/index.html"
   mainWindow.webContents.once 'did-finish-load', ->
     mainWindow.show()
