@@ -8,6 +8,6 @@ BrowserWindow = e.BrowserWindow
 ipcMain = (require 'electron').ipcMain
 loljs = require 'lol-js'
 lolClient = null;
-#console.timeEnd 'init'
+console.timeEnd 'init'
 
 console.log "hehe xd"
