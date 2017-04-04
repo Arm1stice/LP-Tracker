@@ -37,7 +37,7 @@
       </div>
       <div id='third' style='display: none'>
         <h1>Summoner and Region</h1>
-        <p>Lastly, we need your summoner name and your region.</p>
+        <p>Next, we need your summoner name and your region.</p>
         <br>
         <span id='summonerGroup' class='form-group'>
           <input class='form-control' placeholder='Type your summoner name here' id='summonerName'>
@@ -62,7 +62,16 @@
       </div>
       <div id='loading' style='display: none'>
         <i class="fa fa-cog fa-spin" style='font-size: 150px;margin-top: 25px;' aria-hidden="true"></i><br>
-        <p style='font-size: 30px'>Loading...</p>
+        <p style='font-size: 30px'>Verifying the info you provided...</p>
+      </div>
+      <div id='fourth' style='display: none'>
+        <h3>How do you want us to track LP?</h3>
+        <p>You can always change this setting later</p>
+        <button id='manually' class='btn btn-info'>Manually</button>
+        <p>We'll ask you to tell us how much LP you lost/gained after every match. (Faster)</p>
+        <button id='automatically' class='btn btn-info'>Automatically</button>
+        <p>We'll try to figure out the changes in your LP automatically. (Slower due to Riot caching old LP for 5-10 minutes, but automatic)</p>
+        <br>
       </div>
     </div>
   </body>
@@ -130,7 +139,14 @@
                 $("#summonerName").attr("placeholder", "Type your summoner name here")
               })
             }else{
-              // We good!
+              $("#loading").hide();
+              $("#fourth").show();
+              $("#manually").click(function(){
+                ipcRenderer.send("lpUpdateOption", "manually");
+              })
+              $("#automatically").click(function(){
+                ipcRenderer.send("lpUpdateOption", "automatically");
+              })
             }
           });
         }
