@@ -20,4 +20,3 @@ app.once 'ready', ->
     # In this scenario, the api key is already set and the application is set up already, so we just open the main window
     lptConfig = require '../../../config.json' # Import the config
     require './src/index.coffee'
-    console.log 'exists'
