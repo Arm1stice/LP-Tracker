@@ -8,8 +8,6 @@ BrowserWindow = e.BrowserWindow
 ipcMain = (require 'electron').ipcMain
 loljs = require 'lol-js'
 lolClient = null;
-process.on 'uncaughtException', (error) ->
-    console.error error.stack
 # Start of logic for initial start
 mainWindow = new BrowserWindow {
   width: 500
@@ -52,5 +50,5 @@ ipcMain.on 'initialSetupInfo', (event, arg) -> #Initial API Key, Summoner Info, 
               console.log err
             else
               # Next we can open the actual window! Yay, progress!
-              mainWindow.close()
               require './index.coffee'
+              mainWindow.close()
