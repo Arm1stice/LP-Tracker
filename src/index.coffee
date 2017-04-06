@@ -56,7 +56,7 @@ ipcMain.once 'pageLoaded', (event, arg) ->
       throw err
     else
       if docs.length is 0 # There are no matches in the database!
-        lolClient.getMatchlistBySummoner(config.accounts[0].region, config.accounts[0].id, {rankedQueues: ['TEAM_BUILDER_RANKED_SOLO', 'RANKED_FLEX_SR', 'RANKED_SOLO_5x5', 'RANKED_TEAM_3x3', 'RANKED_TEAM_5x5', 'TEAM_BUILDER_DRAFT_RANKED_5x5']}).then (data) ->
+        lolClient.getMatchlistBySummoner(config.accounts[0].region, config.accounts[0].id, {rankedQueues: ['TEAM_BUILDER_RANKED_SOLO', 'RANKED_FLEX_SR', 'RANKED_SOLO_5x5', 'RANKED_TEAM_3x3', 'RANKED_TEAM_5x5', 'TEAM_BUILDER_DRAFT_RANKED_5x5']}).then((data) ->
           util.log "Got #{data.matches.length} matches"
           db.matchlist.insert data.matches, (err) ->
             if err
@@ -64,8 +64,10 @@ ipcMain.once 'pageLoaded', (event, arg) ->
             else
               page.send 'loadingMatchlistFinished', {}
               util.log 'Yay we added the matches to the database'
+        ).catch (reason) ->
+          util.log "We got an error while getting the match list"
+          throw reason
       else
-        util.log "Run"
         lolClient.getMatchlistBySummoner(config.accounts[0].region,
           config.accounts[0].id,
           {
@@ -76,7 +78,7 @@ ipcMain.once 'pageLoaded', (event, arg) ->
               'RANKED_TEAM_5x5',
               'TEAM_BUILDER_DRAFT_RANKED_5x5'],
             beginTime: (Number(docs[0].timestamp) + 1)
-        }).then (data) ->
+        }).then((data) ->
           if not data.matches
             util.log "No new matches detected"
             page.send 'loadingMatchlistFinished', {}
@@ -87,6 +89,9 @@ ipcMain.once 'pageLoaded', (event, arg) ->
                 throw err
               else
                 page.send 'loadingMatchlistFinished', {}
+        ).catch (reason) ->
+          util.log "We got an error while getting the match list"
+          throw reason
         # Get new matches
 
   # Check to see if we need to load new matches
