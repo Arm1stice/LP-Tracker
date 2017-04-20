@@ -43,17 +43,17 @@
           <input class='form-control' placeholder='Type your summoner name here' id='summonerName'>
           <br>
           <select class='form-control' id='region'>
-            <option value="RU">Russia</option>
-            <option value="LAN">Latin America North</option>
-            <option value="EUNE">EU Nordic &amp; East</option>
-            <option value="OCE">Oceania</option>
-            <option value="TR">Turkey</option>
-            <option value="JP">Japan</option>
-            <option value="KR">Republic of Korea</option>
-            <option value="BR">Brazil</option>
-            <option value="NA" selected="true">North America</option>
-            <option value="EUW">EU West</option>
-            <option value="LAS">Latin America South</option>
+            <option value="ru">Russia</option>
+            <option value="lan">Latin America North</option>
+            <option value="eune">EU Nordic &amp; East</option>
+            <option value="oce">Oceania</option>
+            <option value="tr">Turkey</option>
+            <option value="jp">Japan</option>
+            <option value="kr">Republic of Korea</option>
+            <option value="br">Brazil</option>
+            <option value="na" selected="true">North America</option>
+            <option value="euw">EU West</option>
+            <option value="las">Latin America South</option>
           </select>
         </span>
         <br>
@@ -110,6 +110,7 @@
             region: $("#region").val()
           })
           ipcRenderer.once("initialSetupResponse", function(event, arg){
+            console.log("we got a response")
             if(arg.error === 1){
               $("#loading").hide();
               $("#first").hide();
@@ -144,8 +145,8 @@
               $("#manually").click(function(){
                 ipcRenderer.send("lpUpdateOption", "manually");
               })
-              $("#automatically").click(function(){
-                ipcRenderer.send("lpUpdateOption", "automatically");
+              $("#automaticly").click(function(){
+                ipcRenderer.send("lpUpdateOption", "automatic");
               })
             }
           });
