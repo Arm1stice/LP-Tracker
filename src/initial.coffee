@@ -6,8 +6,12 @@ pathExists = require 'path-exists'
 path = require 'path'
 BrowserWindow = e.BrowserWindow
 ipcMain = (require 'electron').ipcMain
-loljs = require 'lol-js'
+KindredAPI = require 'kindred-api'
+REGIONS = KindredAPI.REGIONS
+LIMITS = KindredAPI.LIMITS
+CACHE_TYPES = KindredAPI.CACHE_TYPES
 lolClient = null;
+formatSummonerName = (name) -> return name.replace(/\s/g, '').toLowerCase()
 # Start of logic for initial start
 mainWindow = new BrowserWindow {
   width: 500
@@ -16,6 +20,8 @@ mainWindow = new BrowserWindow {
   resizable: false
   title: "Setup LP-Tracker"
 }
+mainWindow.webContents.on 'will-navigate', (event) ->
+  event.preventDefault()
 mainWindow.loadURL "file://#{__dirname}/../views/initial.html"
 mainWindow.webContents.once 'did-finish-load', ->
   console.timeEnd 'init'
@@ -23,15 +29,22 @@ mainWindow.webContents.once 'did-finish-load', ->
   #mainWindow.webContents.openDevTools {mode: "detach"}
 ipcMain.on 'initialSetupInfo', (event, arg) -> #Initial API Key, Summoner Info, and Region
   console.log arg
-  lolClient = loljs.client {
-    apiKey: arg.apiKey
+  lolClient = new KindredAPI.Kindred {
+    key: arg.apiKey
+    defaultRegion: REGIONS.NORTH_AMERICA
+    debug: false
+    limits: 'dev'
+    cacheOptions: CACHE_TYPES[0]
   }
-  lolClient.getSummonersByName arg.region, [arg.summonerName], (err, data) ->
-    lolClient.destroy()
+  lolClient.getSummoner {
+    region: arg.region
+    name: arg.summonerName
+  }, (err, data) ->
     if err
+      console.error err
       event.sender.send 'initialSetupResponse', {error: 1} # API Key invalid
     else
-      summonerInfo = data[arg.summonerName]
+      summonerInfo = data[formatSummonerName arg.summonerName]
       if summonerInfo == undefined
         event.sender.send 'initialSetupResponse', {error: 2} # Summoner/Region invalid
       else
