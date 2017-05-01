@@ -59,6 +59,12 @@ ipcMain.once 'pageLoaded', (event, arg) ->
   db.matchlist = new Datastore
     filename: path.join __dirname, "../../../../db/matchlist.db"
     autoload: true
+  db.solo = new Datastore
+    filename: path.join __dirname, "../../../../db/ranked_solo.db"
+    autoload: true
+  db.flex = new Datastore
+    filename: path.join __dirname, "../../../../db/ranked_flex.db"
+    autoload: true
   page.send 'loadingDatabasesFinished', {}
   # Step 4: Check to see if we have any matches in the database,
   # if not, download all. If we do, look for new matches.
