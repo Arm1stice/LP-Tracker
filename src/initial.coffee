@@ -4,6 +4,7 @@ app = e.app
 fs = require 'fs'
 pathExists = require 'path-exists'
 path = require 'path'
+menu = e.Menu
 BrowserWindow = e.BrowserWindow
 ipcMain = (require 'electron').ipcMain
 KindredAPI = require 'kindred-api'
@@ -20,6 +21,7 @@ mainWindow = new BrowserWindow {
   resizable: false
   title: "Setup LP-Tracker"
 }
+menu.setApplicationMenu null
 mainWindow.webContents.on 'will-navigate', (event) ->
   event.preventDefault()
 mainWindow.loadURL "file://#{__dirname}/../views/initial.html"
