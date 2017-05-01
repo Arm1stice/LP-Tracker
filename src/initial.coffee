@@ -12,7 +12,6 @@ REGIONS = KindredAPI.REGIONS
 LIMITS = KindredAPI.LIMITS
 CACHE_TYPES = KindredAPI.CACHE_TYPES
 lolClient = null;
-formatSummonerName = (name) -> return name.replace(/\s/g, '').toLowerCase()
 # Start of logic for initial start
 mainWindow = new BrowserWindow {
   width: 500
