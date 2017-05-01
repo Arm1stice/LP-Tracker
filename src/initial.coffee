@@ -44,7 +44,7 @@ ipcMain.on 'initialSetupInfo', (event, arg) -> #Initial API Key, Summoner Info, 
       console.error err
       event.sender.send 'initialSetupResponse', {error: 1} # API Key invalid
     else
-      summonerInfo = data[formatSummonerName arg.summonerName]
+      summonerInfo = data
       if summonerInfo == undefined
         event.sender.send 'initialSetupResponse', {error: 2} # Summoner/Region invalid
       else
