@@ -15,7 +15,7 @@ lolClient = null;
 # Start of logic for initial start
 mainWindow = new BrowserWindow {
   width: 500
-  height: 300
+  height: 350
   show: false
   resizable: false
   title: "Setup LP-Tracker"
