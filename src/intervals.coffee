@@ -5,7 +5,7 @@ currentLP = null
 currentMiniSeries = null;
 module.exports.setupIntervals = (lolClient, ipcMain, config, mainWindow, db) ->
   # Check to see if the person is in game
-  inGame = true;
+  inGame = false;
   ranked = false;
   flex = false;
   lpInterval = null
@@ -37,7 +37,6 @@ module.exports.setupIntervals = (lolClient, ipcMain, config, mainWindow, db) ->
                                 'TEAM_BUILDER_DRAFT_RANKED_5x5'],
                   beginTime: (Number(docs[0].timestamp) + 1)
               }, (err, data) ->
-                util.log "Got new matchlist with #{data.matches.length} match(es)"
                 if err
                   throw err
                 else
