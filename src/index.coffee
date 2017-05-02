@@ -36,7 +36,7 @@ mainWindow = new BrowserWindow
   resizable: false
   center: true
   width: 800
-  height: 400
+  height: 450
   title: "LP-Tracker"
 mainWindow.webContents.on 'will-navigate', (event) ->
   event.preventDefault()
