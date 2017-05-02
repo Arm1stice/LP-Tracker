@@ -155,5 +155,8 @@ module.exports.setupIntervals = (lolClient, ipcMain, config, mainWindow, db) ->
               lp.flex.series.losses = ranking.entries[0].miniSeries.losses
         cb lp
   checkIfInGame()
-  getLP (lp) -> mainWindow.webContents.send "lpUpdate", lp
+  updateLP = ->
+    getLP (lp) -> mainWindow.webContents.send "lpUpdate", lp
+  updateLP()
+  updateLPInterval = setInterval updateLP, 60000
   inGameInterval = setInterval checkIfInGame, 30000
