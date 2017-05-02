@@ -102,4 +102,47 @@ module.exports.setupIntervals = (lolClient, ipcMain, config, mainWindow, db) ->
         if data.participants[player.participantId - 1].stats.win is true then win = true
     cb win
   getLP = (cb) ->
-    #
+    lp = {
+      solo:
+        tier: null
+        division: null
+        lp: null
+        wins: null
+        series:
+          inSeries: false
+          wins: null
+          losses: null
+      flex: {
+        tier: null
+        division: null
+        lp: null
+        losses: null
+        series:
+          inSeries: false
+          wins: null
+          losses: null
+      }
+    }
+    lolClient.getLeagueEntries {
+      region: config.accounts[0].region
+      id: config.accounts[0].id
+    }, (err, data) ->
+      if err
+        # They aren't ranked at all
+        cb lp
+      else
+        data = data[config.accounts[0].id.toString()]
+        for ranking in data
+          if ranking.queue is "RANKED_SOLO_5x5" # Solo ranked
+            lp.solo.tier = ranking.tier
+            lp.solo.division = ranking.entries.division
+            lp.solo.lp = ranking.entries.leaguePoints
+            lp.solo.wins = ranking.entries.wins
+            lp.solo.losses = ranking.entries.losses
+          else if ranking.queue is "RANKED_FLEX_SR" # Flex ranked
+            lp.flex.tier = ranking.tier
+            lp.flex.division = ranking.entries.division
+            lp.flex.lp = ranking.entries.leaguePoints
+            lp.flex.wins = ranking.entries.wins
+            lp.flex.losses = ranking.entries.losses
+        cb lp
