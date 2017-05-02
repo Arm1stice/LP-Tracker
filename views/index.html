@@ -16,11 +16,15 @@
         display: block
         margin: 0 auto;
       }
+      .alert {
+        width: 784px;
+      }
     </style>
   </head>
   <body>
-    <div class='container'>
-        <div id='loading' class='row' style='text-align: center; margin-top: 150px;'>
+    <div id='loading'>
+      <div class='container'>
+        <div class='row' style='text-align: center; margin-top: 150px;'>
           <div class="col-md-10 col-md-offset-1">
             <div class="progress">
               <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
@@ -29,6 +33,13 @@
             <span id='loading-step-2' style='display: none'><h1>Getting matchlist...</h1></span>
           </div>
         </div>
+      </div>
+    </div>
+    <div id='overview' style='display: none'>
+      <div class="alert alert-warning" id='inAGame'>Checking if you are in a game...</div>
+      <div class='container'>
+        <!-- Overview -->
+      </div>
     </div>
   </body>
 
@@ -40,6 +51,8 @@
   <script>
     ipcRenderer = require("electron").ipcRenderer
     screen_height = require("electron").remote.screen.getPrimaryDisplay().workAreaSize.height
+    inAGame = null;
+    first = true;
     $(document).ready(function(){
       ipcRenderer.send("pageLoaded");
       //$("#loading").css("margin-top", (screen_height/2) + "px");
@@ -50,6 +63,25 @@
     })
     ipcRenderer.once('loadingMatchlistFinished', function(){
       $("#loading").hide();
+      $("#overview").show();
+    })
+    ipcRenderer.on('inAGame', function(event, status){
+      if(first === true){
+        $("#inAGame").removeClass("alert-warning");
+        first = false;
+      }
+      if(status.inGame !== inAGame){
+        inAGame = status.inGame
+        if(inAGame === true){
+          $("#inAGame").text("You are currently in a Ranked " + status.type + " game")
+          $("#inAGame").removeClass("alert-danger")
+          $("#inAGame").addClass("alert-success")
+        }else{
+          $("#inAGame").text("You are not in a game right now")
+          $("#inAGame").removeClass("alert-success")
+          $("#inAGame").addClass("alert-danger")
+        }
+      }
     })
   </script>
 </html>
