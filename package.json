@@ -1,6 +1,6 @@
 {
   "name": "lpt-application",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "The application for LP-Tracker",
   "main": "index.coffee",
   "scripts": {
