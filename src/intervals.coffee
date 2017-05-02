@@ -75,9 +75,9 @@ module.exports.setupIntervals = (lolClient, ipcMain, config, mainWindow, db) ->
                                     queue: (if flex then "flex" else "solo")
                                     unixTime: data.matches[0].gameCreation
                                   }
-
                                 else
-                                  lpInterval = setInterval checkForChangeInLP, 30000
+                                  # Automatic checking is still in development
+                                  #lpInterval = setInterval checkForChangeInLP, 30000
                                   # We have to start checking to see if the LP updates on the API
       if data # We are in a game
         inGame = true
