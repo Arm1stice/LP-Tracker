@@ -1,6 +1,7 @@
 # Basic imports
 e = require 'electron'
 app = e.app
+menu = e.Menu
 fs = require 'fs'
 pathExists = require 'path-exists'
 config = require '../../../../config.json'
@@ -31,6 +32,7 @@ lolClient = new KindredAPI.Kindred {
   INITIAL STARTUP PROCESS
 ###
 # Create window
+menu.setApplicationMenu null
 mainWindow = new BrowserWindow
   show: false
   resizable: false
@@ -112,7 +114,7 @@ ipcMain.once 'pageLoaded', (event, arg) ->
             throw err
           if not data.matches
             util.log "No new matches detected"
-            page.send 'loadingMatchlistFinished', {}
+            page.send 'loadingMatchlistFinished', {summonerName: config.accounts[0].name}
             mainFunction()
           else
             util.log "Got #{data.matches.length} new matches"

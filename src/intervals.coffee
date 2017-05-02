@@ -91,8 +91,6 @@ module.exports.setupIntervals = (lolClient, ipcMain, config, mainWindow, db) ->
           ranked = false
           flex = false
           inGame = false
-  checkIfInGame()
-  inGameInterval = setInterval checkIfInGame, 30000
   checkForChangeInLP = ->
     # Check for changes in LP
   getIfWin = (data, cb) ->
@@ -108,6 +106,7 @@ module.exports.setupIntervals = (lolClient, ipcMain, config, mainWindow, db) ->
         division: null
         lp: null
         wins: null
+        losses: null
         series:
           inSeries: false
           wins: null
@@ -116,6 +115,7 @@ module.exports.setupIntervals = (lolClient, ipcMain, config, mainWindow, db) ->
         tier: null
         division: null
         lp: null
+        wins: null
         losses: null
         series:
           inSeries: false
@@ -135,14 +135,25 @@ module.exports.setupIntervals = (lolClient, ipcMain, config, mainWindow, db) ->
         for ranking in data
           if ranking.queue is "RANKED_SOLO_5x5" # Solo ranked
             lp.solo.tier = ranking.tier
-            lp.solo.division = ranking.entries.division
-            lp.solo.lp = ranking.entries.leaguePoints
-            lp.solo.wins = ranking.entries.wins
-            lp.solo.losses = ranking.entries.losses
+            lp.solo.division = ranking.entries[0].division
+            lp.solo.lp = ranking.entries[0].leaguePoints
+            lp.solo.wins = ranking.entries[0].wins
+            lp.solo.losses = ranking.entries[0].losses
+            if ranking.entries[0].miniSeries isnt undefined
+              lp.solo.series.inSeries = true
+              lp.solo.series.wins = ranking.entries[0].miniSeries.wins
+              lp.solo.series.losses = ranking.entries[0].miniSeries.losses
           else if ranking.queue is "RANKED_FLEX_SR" # Flex ranked
             lp.flex.tier = ranking.tier
-            lp.flex.division = ranking.entries.division
-            lp.flex.lp = ranking.entries.leaguePoints
-            lp.flex.wins = ranking.entries.wins
-            lp.flex.losses = ranking.entries.losses
+            lp.flex.division = ranking.entries[0].division
+            lp.flex.lp = ranking.entries[0].leaguePoints
+            lp.flex.wins = ranking.entries[0].wins
+            lp.flex.losses = ranking.entries[0].losses
+            if ranking.entries[0].miniSeries isnt undefined
+              lp.flex.series.inSeries = true
+              lp.flex.series.wins = ranking.entries[0].miniSeries.wins
+              lp.flex.series.losses = ranking.entries[0].miniSeries.losses
         cb lp
+  checkIfInGame()
+  getLP (lp) -> mainWindow.webContents.send "lpUpdate", lp
+  inGameInterval = setInterval checkIfInGame, 30000

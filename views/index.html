@@ -37,8 +37,26 @@
     </div>
     <div id='overview' style='display: none'>
       <div class="alert alert-warning" id='inAGame'>Checking if you are in a game...</div>
-      <div class='container'>
-        <!-- Overview -->
+      <div class='container-fluid'>
+        <div class="row" style='text-align: center'>
+          <h1 id='summonerName'></span>
+        </div>
+        <div class="row" style='text-align: center'>
+          <div class="col-xs-6">
+            <h2>Solo/Duo</h2>
+            <h3><span id='solo_rank'>-</h3>
+            <h4><span id='solo_lp'>-</h4>
+            <h4 id='inSoloSeries' style='display: none'>In Series: <span id='solo_series_wins' style='color: green'>-</span>/<span id='solo_series_losses' style='color: red'>-</span></h4>
+            <h4><span id='solo_wins' style='color: green'>-</span>/<span id='solo_losses' style='color: red'>-</span></h4>
+          </div>
+          <div class="col-xs-6">
+            <h2>Flex</h2>
+            <h3><span id='flex_rank'>-</h3>
+            <h4><span id='flex_lp'>-</h4>
+            <h4 id='inFlexSeries' style='display: none'>In Series: <span id='flex_series_wins' style='color: green'>-</span>/<span id='flex_series_losses' style='color: red'>-</span></h4>
+            <h4><span id='flex_wins' style='color: green'>-</span>/<span id='flex_losses' style='color: red'>-</span></h4>
+          </div>
+        </div>
       </div>
     </div>
   </body>
@@ -61,9 +79,38 @@
       $("#loading-step-1").hide();
       $("#loading-step-2").show();
     })
-    ipcRenderer.once('loadingMatchlistFinished', function(){
+    ipcRenderer.once('loadingMatchlistFinished', function(event, obj){
+      $("#summonerName").text(obj.summonerName)
       $("#loading").hide();
       $("#overview").show();
+    })
+    ipcRenderer.on('lpUpdate', function(event, lp){
+      if(lp.solo.tier !== null){
+        solo_rank = lp.solo.tier.substring(0, 1) + lp.solo.tier.substring(1, lp.solo.tier.length).toLowerCase() + " " + lp.solo.division
+        $("#solo_rank").text(solo_rank)
+        solo_lp = lp.solo.lp + "LP"
+        $("#solo_lp").text(solo_lp)
+        if(lp.solo.series.inSeries === true){
+          $("#inSoloSeries").show()
+          $("#solo_series_wins").text(lp.solo.series.wins + " wins")
+          $("#solo_series_losses").text(lp.solo.series.losses + " losses")
+        }
+        $("#solo_wins").text(lp.solo.wins + " wins")
+        $("#solo_losses").text(lp.solo.losses + " losses")
+      }
+      if(lp.flex.tier !== null){
+        flex_rank = lp.flex.tier.substring(0, 1) + lp.flex.tier.substring(1, lp.flex.tier.length).toLowerCase() + " " + lp.flex.division
+        $("#flex_rank").text(flex_rank)
+        flex_lp = lp.flex.lp + "LP"
+        $("#flex_lp").text(flex_lp)
+        if(lp.flex.series.inSeries === true){
+          $("#inFlexSeries").show()
+          $("#flex_series_wins").text(lp.flex.series.wins + " wins")
+          $("#flex_series_losses").text(lp.flex.series.losses + " losses")
+        }
+        $("#flex_wins").text(lp.flex.wins + " wins")
+        $("#flex_losses").text(lp.flex.losses + " losses")
+      }
     })
     ipcRenderer.on('inAGame', function(event, status){
       if(first === true){
