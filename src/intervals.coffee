@@ -74,18 +74,50 @@ module.exports.setupIntervals = (lolClient, ipcMain, config, mainWindow, db) ->
                                     matchId: data.matches[0].matchId
                                     queue: (if flex then "flex" else "solo")
                                     unixTime: data.matches[0].gameCreation
+                                    oldTier: currentTier
+                                    oldDivision: currentDivision
+                                    oldLP: currentLP
+                                    oldSeries: currentMiniSeries
                                   }
+                                  ipcMain.clearAllListeners 'lpUpdateModal'
+                                  ipcMain.on 'lpUpdateModal', (event, data) ->
+                                    util.log "Got update modal info"
+                                    dbToUse = db.solo
+                                    if data.queue is "flex" then dbToUse = db.flex
+                                    dbToUse.insert data, (err) ->
+                                      if err then throw err
                                 else
                                   # Automatic checking is still in development
                                   #lpInterval = setInterval checkForChangeInLP, 30000
                                   # We have to start checking to see if the LP updates on the API
       if data # We are in a game
-        inGame = true
+        if data.gameQueueConfigId is 420 or data.gameQueueConfigId is 440
+          util.log "This is the first time we have realized we are in a game. Geting current LP..."
+          if not inGame # If this is the first time we have realized we are in the game
+            getLP (lp) ->
+              if data.gameQueueConfigId is 420
+                currentLP = lp.solo.lp
+                currentTier = lp.solo.tier
+                currentDivision = lp.solo.division
+                if lp.solo.series.inSeries is true
+                  currentMiniSeries = lp.solo.series
+                else
+                  currentMiniSeries = null
+              else
+                currentLP = lp.flex.lp
+                currentTier = lp.flex.tier
+                currentDivision = lp.flex.division
+                if lp.flex.series.inSeries is true
+                  currentMiniSeries = lp.flex.series
+                else
+                  currentMiniSeries = false
         if data.gameQueueConfigId is 420
+          inGame = true
           flex = false
           mainWindow.webContents.send 'inAGame', {inGame: true, type: 'Solo/Duo'}
         else if data.gameQueueConfigId is 440
           mainWindow.webContents.send 'inAGame', {inGame: true, type: 'Flex'}
+          inGame = true
           flex = true
         else
           ranked = false
@@ -158,5 +190,6 @@ module.exports.setupIntervals = (lolClient, ipcMain, config, mainWindow, db) ->
   updateLP = ->
     getLP (lp) -> mainWindow.webContents.send "lpUpdate", lp
   updateLP()
+
   updateLPInterval = setInterval updateLP, 60000
   inGameInterval = setInterval checkIfInGame, 30000

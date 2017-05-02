@@ -59,6 +59,24 @@
         </div>
       </div>
     </div>
+    <div class='modal fade' role='dialog' data-backdrop='static' id='lpModal'>
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel">LP Tracking</h4>
+          </div>
+          <div class="modal-body">
+            <h2 style='text-align: center'>You just <span id='lpModalWinLoss'></span> a <span id='lpModalTypeOfMatch'></span> match</h2>
+            <br>
+            <input id='lpModalAmount' class='form-control' placeholder='How much LP did you ${win/lose}'>
+            <input id='lpModalJSON' style='display:none'>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id='lpModalSubmit' class="btn btn-primary">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
 
   <script>
@@ -68,11 +86,29 @@
   <script src='../static/js/bootstrap.min.js'></script>
   <script>
     ipcRenderer = require("electron").ipcRenderer
+    mainProcess = null;
     screen_height = require("electron").remote.screen.getPrimaryDisplay().workAreaSize.height
     inAGame = null;
     first = true;
     $(document).ready(function(){
       ipcRenderer.send("pageLoaded");
+      $("#lpModalSubmit").click(function(){
+        if($("#lpModalAmount").val() !== ""){
+          obj = JSON.parse($("#lpModalJSON").val())
+          negativeOrNot = function(number){
+            if(obj.win === true){
+              return number
+            }else{
+              return -number
+            }
+          }
+          obj.lpChange = negativeOrNot(Number($("#lpModalAmount").val()))
+          mainProcess.send("lpUpdateModal", obj)
+          $("#lpModal").modal('hide')
+        }else{
+          $("#lpModalAmount").effect("shake");
+        }
+      });
       //$("#loading").css("margin-top", (screen_height/2) + "px");
     })
     ipcRenderer.once('loadingDatabasesFinished', function(){
@@ -131,7 +167,24 @@
       }
     })
     ipcRenderer.on('newMatchLPGainLoss', function(event, gameObject){
-      // Open a modal
+      mainProcess = event.sender
+      if(gameObject.win === true){
+        $("#lpModalWinLoss").text("won")
+        $("#lpModalWinLoss").css("color", 'green')
+        $("#lpModalAmount").setAttribute('placeholder', 'How much LP did you gain?')
+      }else{
+        $("#lpModalWinLoss").text("lost")
+        $("#lpModalWinLoss").css("color", 'red')
+        $("#lpModalAmount").setAttribute('placeholder', 'How much LP did you lose?')
+      }
+      if(gameObject.queue === 'solo'){
+        $("#lpModalTypeOfMatch").text("Solo/Duo")
+      }else{
+        $("#lpModalTypeOfMatch").text("Flex")
+      }
+      str = JSON.stringify(gameObject)
+      $("#lpModalJSON").val(str)
+      $('#lpModal').modal('show')
     })
   </script>
 </html>
