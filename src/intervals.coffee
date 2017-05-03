@@ -1,5 +1,5 @@
 util = require 'util'
-currentLeague = null
+currentDivision = null
 currentTier = null
 currentLP = null
 currentMiniSeries = null;
@@ -92,8 +92,8 @@ module.exports.setupIntervals = (lolClient, ipcMain, config, mainWindow, db) ->
                                   # We have to start checking to see if the LP updates on the API
       if data # We are in a game
         if data.gameQueueConfigId is 420 or data.gameQueueConfigId is 440
-          util.log "This is the first time we have realized we are in a game. Geting current LP..."
           if not inGame # If this is the first time we have realized we are in the game
+            util.log "This is the first time we have realized we are in a game. Getting current LP..."
             getLP (lp) ->
               if data.gameQueueConfigId is 420
                 currentLP = lp.solo.lp
