@@ -93,7 +93,7 @@ ipcMain.once 'pageLoaded', (event, arg) ->
             if err
               throw err
             else
-              page.send 'loadingMatchlistFinished', {}
+              page.send 'loadingMatchlistFinished', {summonerName: config.accounts[0].name}
               util.log 'Yay we added the matches to the database'
               mainFunction()
       else
