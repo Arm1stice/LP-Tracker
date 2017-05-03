@@ -79,7 +79,7 @@ module.exports.setupIntervals = (lolClient, ipcMain, config, mainWindow, db) ->
                                     oldLP: currentLP
                                     oldSeries: currentMiniSeries
                                   }
-                                  ipcMain.clearAllListeners 'lpUpdateModal'
+                                  ipcMain.removeAllListeners 'lpUpdateModal'
                                   ipcMain.on 'lpUpdateModal', (event, data) ->
                                     util.log "Got update modal info"
                                     dbToUse = db.solo
@@ -110,7 +110,7 @@ module.exports.setupIntervals = (lolClient, ipcMain, config, mainWindow, db) ->
                 if lp.flex.series.inSeries is true
                   currentMiniSeries = lp.flex.series
                 else
-                  currentMiniSeries = false
+                  currentMiniSeries = null
         if data.gameQueueConfigId is 420
           inGame = true
           flex = false
@@ -143,6 +143,7 @@ module.exports.setupIntervals = (lolClient, ipcMain, config, mainWindow, db) ->
           inSeries: false
           wins: null
           losses: null
+          target: null
       flex: {
         tier: null
         division: null
@@ -153,6 +154,7 @@ module.exports.setupIntervals = (lolClient, ipcMain, config, mainWindow, db) ->
           inSeries: false
           wins: null
           losses: null
+          target: null
       }
     }
     lolClient.getLeagueEntries {
@@ -174,6 +176,7 @@ module.exports.setupIntervals = (lolClient, ipcMain, config, mainWindow, db) ->
             if ranking.entries[0].miniSeries isnt undefined
               lp.solo.series.inSeries = true
               lp.solo.series.wins = ranking.entries[0].miniSeries.wins
+              lp.solo.series.target = ranking.entries[0].miniSeries.target
               lp.solo.series.losses = ranking.entries[0].miniSeries.losses
           else if ranking.queue is "RANKED_FLEX_SR" # Flex ranked
             lp.flex.tier = ranking.tier
@@ -184,6 +187,7 @@ module.exports.setupIntervals = (lolClient, ipcMain, config, mainWindow, db) ->
             if ranking.entries[0].miniSeries isnt undefined
               lp.flex.series.inSeries = true
               lp.flex.series.wins = ranking.entries[0].miniSeries.wins
+              lp.flex.series.target = ranking.entries[0].miniSeries.target
               lp.flex.series.losses = ranking.entries[0].miniSeries.losses
         cb lp
   checkIfInGame()
