@@ -192,7 +192,9 @@ module.exports.setupIntervals = (lolClient, ipcMain, config, mainWindow, db) ->
         cb lp
   checkIfInGame()
   updateLP = ->
-    getLP (lp) -> mainWindow.webContents.send "lpUpdate", lp
+    util.log "Updating LP..."
+    getLP (lp) -> 
+      mainWindow.webContents.send "lpUpdate", lp
   updateLP()
 
   updateLPInterval = setInterval updateLP, 60000

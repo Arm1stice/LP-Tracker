@@ -72,6 +72,9 @@
             <input id='lpModalJSON' style='display:none'>
           </div>
           <div class="modal-footer">
+            <button class='btn btn-info' style='display: none' id='intoSeries'>Got into series?</button>
+            <button class='btn btn-info' style='display: none' id='gotPromoted'>Got promoted?</button>
+            <button class='btn btn-info' style='display: none' id='gotDemoted'>Got demoted?</button>
             <button type="button" id='lpModalSubmit' class="btn btn-primary">Submit</button>
           </div>
         </div>
@@ -103,11 +106,18 @@
             }
           }
           obj.lpChange = negativeOrNot(Number($("#lpModalAmount").val()))
+          obj.newLP = obj.oldLP + negativeOrNot(Number($("#lpModalAmount").val()))
+          obj.newTier = obj.oldTier
+          obj.newDivision = obj.oldDivision
+          obj.newSeries = null
           mainProcess.send("lpUpdateModal", obj)
           $("#lpModal").modal('hide')
         }else{
           $("#lpModalAmount").effect("shake");
         }
+      });
+      $("#intoSeries").click(function(){
+        obj = JSON.parse($("#lpModalJSON").val())
       });
       //$("#loading").css("margin-top", (screen_height/2) + "px");
     })
@@ -183,6 +193,21 @@
         $("#lpModalTypeOfMatch").text("Flex")
       }
       str = JSON.stringify(gameObject)
+      // If you were close to series, ask if you got into series
+      if(gameObject.oldLP > 70 && gameObject.oldSeries === null && gameObject.win === true){
+        $("#intoSeries").show()
+      }else{
+        $("#intoSeries").hide()
+      }
+      // If you were in a series before, we can assume a lot of stuff
+      if(gameObject.oldSeries !== null){
+        var newSeries = gameObject.oldSeries
+        if(gameObject.win === true){
+          
+        }else{
+
+        }
+      }
       $("#lpModalJSON").val(str)
       $('#lpModal').modal('show')
     })
