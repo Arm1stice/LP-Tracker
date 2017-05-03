@@ -8,7 +8,7 @@ BrowserWindow = e.BrowserWindow
 globalShortcut = require('electron').globalShortcut
 # Here we goooo
 mainWindow = null;
-globalShortcut.register 'Super+D', ->
+globalShortcut.register 'Ctrl+Alt+D', ->
   BrowserWindow.getFocusedWindow().webContents.openDevTools {mode: 'detach'}
 ###
   Initial run - We have to copy the default config file
