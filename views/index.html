@@ -96,6 +96,17 @@
     $(document).ready(function(){
       ipcRenderer.send("pageLoaded");
       $("#lpModalSubmit").click(function(){
+        var lpChangeObj = {
+          type: null // This will either be "leaguepoints" to denote just a simple lp change, "tier" to denote a change in tier, "division" to denote a change in division, or "series" for a series update
+          queue: null // The queue type (flex or solo)
+          old: null // The old value
+          new: null // The new value
+          newTier: null // The current tier (in case people don't always use LP-Tracker we don't want to have discontinuation of data)
+          newDivision: null // The current division (for the same reason as listed above)
+          date: null // The date of the match
+          note: null // An optional note to add to the database
+          matchId: null // ID of the match which caused the change (could be empty if we just have a queue dodge)
+        }
         if($("#lpModalAmount").val() !== ""){
           obj = JSON.parse($("#lpModalJSON").val())
           negativeOrNot = function(number){
@@ -105,12 +116,15 @@
               return -number
             }
           }
-          obj.lpChange = negativeOrNot(Number($("#lpModalAmount").val()))
-          obj.newLP = obj.oldLP + negativeOrNot(Number($("#lpModalAmount").val()))
-          obj.newTier = obj.oldTier
-          obj.newDivision = obj.oldDivision
-          obj.newSeries = null
-          mainProcess.send("lpUpdateModal", obj)
+          lpChangeObj.type = 'leaguepoints'
+          lpChangeObj.matchId = obj.matchId
+          lpChangeObj.date = obj.unixTime
+          lpChangeObj.old = obj.oldLP
+          lpChangeObj.new = obj.oldLP + negativeOrNot(Number($("#lpModalAmount").val()))
+          lpChangeObj.newTier = obj.oldTier
+          lpChangeObj.newDivision = obj.oldDivision
+          lpChangeObj.queue = obj.queue
+          mainProcess.send("lpUpdateModal", lpChangeObj)
           $("#lpModal").modal('hide')
         }else{
           $("#lpModalAmount").effect("shake");
