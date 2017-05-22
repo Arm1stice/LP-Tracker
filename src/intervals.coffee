@@ -123,8 +123,6 @@ module.exports.setupIntervals = (lolClient, ipcMain, config, mainWindow, db) ->
           ranked = false
           flex = false
           inGame = false
-  checkForChangeInLP = ->
-    # Check for changes in LP
   getIfWin = (data, cb) ->
     win = false;
     for player in data.participantIdentities
