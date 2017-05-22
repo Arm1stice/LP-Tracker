@@ -86,6 +86,7 @@ module.exports.setupIntervals = (lolClient, ipcMain, config, mainWindow, db) ->
                                     if data.queue is "flex" then dbToUse = db.flex
                                     dbToUse.insert data, (err) ->
                                       if err then throw err
+                                      mainWindow.webContents.send 'updateLPGraphs', {} # Tell the client to update the graphs, since we just added new info to the database
                                 else
                                   # Automatic checking is still in development
                                   #lpInterval = setInterval checkForChangeInLP, 30000
@@ -191,7 +192,7 @@ module.exports.setupIntervals = (lolClient, ipcMain, config, mainWindow, db) ->
   checkIfInGame()
   updateLP = ->
     util.log "Updating LP..."
-    getLP (lp) -> 
+    getLP (lp) ->
       mainWindow.webContents.send "lpUpdate", lp
   updateLP()
 
