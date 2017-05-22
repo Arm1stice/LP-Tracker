@@ -176,40 +176,7 @@
         }
       }
     })
-    ipcRenderer.on('newMatchLPGainLoss', function(event, gameObject){
-      mainProcess = event.sender
-      if(gameObject.win === true){
-        $("#lpModalWinLoss").text("won")
-        $("#lpModalWinLoss").css("color", 'green')
-        $("#lpModalAmount").setAttribute('placeholder', 'How much LP did you gain?')
-      }else{
-        $("#lpModalWinLoss").text("lost")
-        $("#lpModalWinLoss").css("color", 'red')
-        $("#lpModalAmount").setAttribute('placeholder', 'How much LP did you lose?')
-      }
-      if(gameObject.queue === 'solo'){
-        $("#lpModalTypeOfMatch").text("Solo/Duo")
-      }else{
-        $("#lpModalTypeOfMatch").text("Flex")
-      }
-      str = JSON.stringify(gameObject)
-      // If you were close to series, ask if you got into series
-      if(gameObject.oldLP > 70 && gameObject.oldSeries === null && gameObject.win === true){
-        $("#intoSeries").show()
-      }else{
-        $("#intoSeries").hide()
-      }
-      // If you were in a series before, we can assume a lot of stuff
-      if(gameObject.oldSeries !== null){
-        var newSeries = gameObject.oldSeries
-        if(gameObject.win === true){
-          
-        }else{
-
-        }
-      }
-      $("#lpModalJSON").val(str)
-      $('#lpModal').modal('show')
-    })
   </script>
+  <script src='../static/js/utils.js'></script>
+  <script src='../static/js/lpUpdate.js'></script>
 </html>
