@@ -8,6 +8,7 @@ config = require '../../../../config.json'
 path = require 'path'
 Datastore = require 'nedb'
 BrowserWindow = e.BrowserWindow
+globalShortcut = require('electron').globalShortcut
 ipcMain = e.ipcMain
 KindredAPI = require 'kindred-api'
 REGIONS = KindredAPI.REGIONS
@@ -42,6 +43,9 @@ mainWindow = new BrowserWindow
   title: "LP-Tracker"
 mainWindow.webContents.on 'will-navigate', (event) ->
   event.preventDefault()
+mainWindow.webContents.on 'did-finish-load', ->
+  globalShortcut.register 'Ctrl+Alt+B', ->
+    mainWindow.show()
 mainWindow.loadURL "file://#{__dirname}/../views/index.html"
 
 # Step 2: Wait for the page to load, using an ipc event instead of did-finish-load to grab the page's ipc object
