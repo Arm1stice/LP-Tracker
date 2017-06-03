@@ -70,7 +70,7 @@ getIfWin = (data, done) ->
   done win
 module.exports.getIfWin = getIfWin
 
-getLP = (config, lolClient, done) ->
+getLp = (config, lolClient, done) ->
   lp =
     solo:
       tier: null
