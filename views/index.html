@@ -180,12 +180,21 @@
       if(status.inGame !== inAGame){
         inAGame = status.inGame
         if(inAGame === true){
-          $("#inAGame").text("You are currently in a Ranked " + status.type + " game")
-          $("#inAGame").removeClass("alert-danger")
-          $("#inAGame").addClass("alert-success")
+          if(status.ranked === true){
+            $("#inAGame").text("You are currently in a Ranked " + status.type + " game")
+            $("#inAGame").removeClass("alert-danger")
+            $("#inAGame").removeClass("alert-info")
+            $("#inAGame").addClass("alert-success")
+          }else{
+            $("#inAGame").text("You are currently in a Normal")
+            $("#inAGame").removeClass("alert-danger")
+            $("#inAGame").removeClass("alert-success")
+            $("#inAGame").addClass("alert-info")
+          }
         }else{
           $("#inAGame").text("You are not in a game right now")
           $("#inAGame").removeClass("alert-success")
+          $("#inAGame").removeClass("alert-info")
           $("#inAGame").addClass("alert-danger")
         }
       }
